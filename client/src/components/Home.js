@@ -63,19 +63,23 @@ const Home = ({ user, logout }) => {
   };
 
   const postMessage = (body) => {
-    try {
-      const data = saveMessage(body);
+    saveMessage(body)
+      .then((data) => {
+        try {
+          if (!body.conversationId) {
+            addNewConvo(body.recipientId, data.message);
+          } else {
+            addMessageToConversation(data);
+          }
 
-      if (!body.conversationId) {
-        addNewConvo(body.recipientId, data.message);
-      } else {
-        addMessageToConversation(data);
-      }
-
-      sendMessage(data, body);
-    } catch (error) {
-      console.error(error);
-    }
+          sendMessage(data, body);
+        } catch (error) {
+          console.error(error);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
   const addNewConvo = useCallback(
@@ -89,7 +93,7 @@ const Home = ({ user, logout }) => {
       });
       setConversations(conversations);
     },
-    [setConversations, conversations],
+    [setConversations, conversations]
   );
 
   const addMessageToConversation = useCallback(
@@ -113,8 +117,9 @@ const Home = ({ user, logout }) => {
         }
       });
       setConversations(conversations);
+      fetchConversations();
     },
-    [setConversations, conversations],
+    [setConversations, conversations]
   );
 
   const setActiveChat = (username) => {
@@ -131,7 +136,7 @@ const Home = ({ user, logout }) => {
         } else {
           return convo;
         }
-      }),
+      })
     );
   }, []);
 
@@ -145,9 +150,18 @@ const Home = ({ user, logout }) => {
         } else {
           return convo;
         }
-      }),
+      })
     );
   }, []);
+
+  const fetchConversations = async () => {
+    try {
+      const { data } = await axios.get("/api/conversations");
+      setConversations(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   // Lifecycle
 
@@ -180,14 +194,6 @@ const Home = ({ user, logout }) => {
   }, [user, history, isLoggedIn]);
 
   useEffect(() => {
-    const fetchConversations = async () => {
-      try {
-        const { data } = await axios.get("/api/conversations");
-        setConversations(data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
     if (!user.isFetching) {
       fetchConversations();
     }
