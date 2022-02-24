@@ -92,6 +92,7 @@ const Home = ({ user, logout }) => {
         }
       });
       setConversations(conversations);
+      fetchConversations();
     },
     [setConversations, conversations]
   );
