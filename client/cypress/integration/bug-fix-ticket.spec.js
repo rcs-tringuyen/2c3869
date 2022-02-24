@@ -14,9 +14,9 @@ const bob = {
 describe("Bug Fix: Sending Messages", () => {
   it("setup", () => {
     cy.signup(alice.username, alice.email, alice.password);
-    cy.logout();
+    //cy.logout();
     cy.signup(bob.username, bob.email, bob.password);
-    cy.logout();
+    //cy.logout();
   });
 
   it("sends message in a new conversation", () => {
