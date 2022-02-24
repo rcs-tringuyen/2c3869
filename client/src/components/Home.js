@@ -92,7 +92,7 @@ const Home = ({ user, logout }) => {
         }
       });
       setConversations(conversations);
-      //fetchConversations();
+      fetchConversations();
     },
     [setConversations, conversations]
   );
@@ -118,7 +118,7 @@ const Home = ({ user, logout }) => {
         }
       });
       setConversations(conversations);
-      //fetchConversations();
+      fetchConversations();
     },
     [setConversations, conversations]
   );
@@ -199,10 +199,6 @@ const Home = ({ user, logout }) => {
       fetchConversations();
     }
   }, [user]);
-
-  useEffect(() => {
-    fetchConversations();
-  }, [conversations]);
 
   const handleLogout = async () => {
     if (user && user.id) {
