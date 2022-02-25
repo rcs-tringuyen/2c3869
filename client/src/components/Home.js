@@ -25,6 +25,7 @@ const Home = ({ user, logout }) => {
   const classes = useStyles();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+
   const addSearchedUsers = (users) => {
     const currentUsers = {};
 
@@ -63,23 +64,20 @@ const Home = ({ user, logout }) => {
   };
 
   const postMessage = (body) => {
-    saveMessage(body)
-      .then((data) => {
-        try {
-          if (!body.conversationId) {
-            addNewConvo(body.recipientId, data.message);
-          } else {
-            addMessageToConversation(data);
-          }
-
-          sendMessage(data, body);
-        } catch (error) {
-          console.error(error);
+    (async () => {
+      const data = await saveMessage(body);
+      try {
+        if (!body.conversationId) {
+          addNewConvo(body.recipientId, data.message);
+        } else {
+          addMessageToConversation(data);
         }
-      })
-      .catch((error) => {
+  
+        sendMessage(data, body);
+      } catch (error) {
         console.error(error);
-      });
+      }
+    })();
   };
 
   const addNewConvo = useCallback(
@@ -101,6 +99,7 @@ const Home = ({ user, logout }) => {
     (data) => {
       // if sender isn't null, that means the message needs to be put in a brand new convo
       const { message, sender = null } = data;
+      let newConversations = [...conversations];
       if (sender !== null) {
         const newConvo = {
           id: message.conversationId,
@@ -108,17 +107,16 @@ const Home = ({ user, logout }) => {
           messages: [message],
         };
         newConvo.latestMessageText = message.text;
-        setConversations((prev) => [newConvo, ...prev]);
+        newConversations = [newConvo, ...newConversations];
       }
-
-      conversations.forEach((convo) => {
+      newConversations.forEach((convo) => {
         if (convo.id === message.conversationId) {
           convo.messages.push(message);
           convo.latestMessageText = message.text;
         }
       });
-      setConversations(conversations);
-      fetchConversations();
+      setConversations(newConversations);
+      //fetchConversations();
     },
     [setConversations, conversations]
   );
@@ -199,6 +197,7 @@ const Home = ({ user, logout }) => {
       fetchConversations();
     }
   }, [user]);
+
 
   const handleLogout = async () => {
     if (user && user.id) {
