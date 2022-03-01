@@ -37,18 +37,32 @@ class Conversations(APIView):
                 convo_dict = {
                     "id": convo.id,
                     "messages": [
-                        message.to_dict(["id", "text", "senderId", "createdAt"])
+                        message.to_dict(["id", "text", "senderId", "createdAt", "isRead"])
                         for message in convo.messages.all()
                     ],
                 }
 
                 # set properties for notification count and latest message preview
                 convo_dict["latestMessageText"] = convo_dict["messages"][-1]["text"]
+                read_status = {
+                    "isRead": convo_dict["messages"][-1]["isRead"],
+                    "latestMessageId": convo_dict["messages"][-1]["id"]
+                }
+                if convo_dict["messages"][-1]["senderId"] == user_id:
+                    read_status["isRead"] = True
+                if not read_status["isRead"]:
+                    for i in range(len(convo_dict["messages"])):
+                        if not convo_dict["messages"][i]["isRead"]:
+                            read_status["unreadMessagesCount"] = len(convo_dict["messages"]) - i
+                            break
+
+                convo_dict["readStatus"] = read_status
 
                 # set a property "otherUser" so that frontend will have easier access
                 user_fields = ["id", "username", "photoUrl"]
                 if convo.user1 and convo.user1.id != user_id:
                     convo_dict["otherUser"] = convo.user1.to_dict(user_fields)
+
                 elif convo.user2 and convo.user2.id != user_id:
                     convo_dict["otherUser"] = convo.user2.to_dict(user_fields)
 

@@ -1,5 +1,5 @@
-import React from 'react';
-import { Box } from '@material-ui/core';
+import React, {useState} from 'react';
+import { Box, Badge } from '@material-ui/core';
 import { BadgeAvatar, ChatContent } from '../Sidebar';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -20,6 +20,7 @@ const useStyles = makeStyles((theme) => ({
 const Chat = ({ conversation, setActiveChat }) => {
   const classes = useStyles();
   const { otherUser } = conversation;
+  const unreadMessagesCount = conversation.id && (conversation.readStatus.unreadMessagesCount)
 
   const handleClick = async (conversation) => {
     await setActiveChat(conversation.otherUser.username);
@@ -34,6 +35,10 @@ const Chat = ({ conversation, setActiveChat }) => {
         sidebar={true}
       />
       <ChatContent conversation={conversation} />
+      {unreadMessagesCount
+        ? <Badge badgeContent={unreadMessagesCount} color="primary" style={{"marginRight": "25px"}}></Badge>
+        : <></> 
+      }
     </Box>
   );
 };

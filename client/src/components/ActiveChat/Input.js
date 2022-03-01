@@ -15,13 +15,17 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const Input = ({ otherUser, conversationId, user, postMessage }) => {
+const Input = ({ otherUser, conversationId, user, postMessage, seenMessage }) => {
   const classes = useStyles();
   const [text, setText] = useState('');
 
   const handleChange = (event) => {
     setText(event.target.value);
   };
+
+  const handleFocus = (event) => {
+    seenMessage(conversationId);
+  }; 
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -48,6 +52,7 @@ const Input = ({ otherUser, conversationId, user, postMessage }) => {
           value={text}
           name="text"
           onChange={handleChange}
+          onFocus={handleFocus}
         />
       </FormControl>
     </form>
