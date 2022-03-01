@@ -86,6 +86,10 @@ const Home = ({ user, logout }) => {
           convo.messages = [...convo.messages, message]
           convo.latestMessageText = message.text;
           convo.id = message.conversationId;
+          convo.readStatus = {
+            "isRead" : true,
+            "unreadMessagesCount": 0 
+          };
         }
       });
       setConversations(newConversations);
@@ -112,6 +116,10 @@ const Home = ({ user, logout }) => {
           convo.messages = [...convo.messages, message];
           convo.latestMessageText = message.text;
           if (message.senderId !== user.id) {
+            console.log(convo)
+            if (!convo.hasOwnProperty("readStatus")) {
+              convo.readStatus = {}
+            }
             convo.readStatus.isRead = false;
             convo.readStatus.unreadMessagesCount 
               ? convo.readStatus.unreadMessagesCount += 1
@@ -124,7 +132,7 @@ const Home = ({ user, logout }) => {
       });
       setConversations(newConversations);
     },
-    [setConversations, conversations]
+    [setConversations, conversations, user]
   );
 
   const setActiveChat = async (username) => {
@@ -134,16 +142,18 @@ const Home = ({ user, logout }) => {
     var flag = false;
     newConversations.forEach((convo) => {
       if (convo.otherUser.username === username) {
-        if (!convo.messages[convo.messages.length-1].isRead) flag = true;
-        convo.readStatus.isRead = true;
-        convo.readStatus.unreadMessagesCount = 0;
-        var newConvoMessages = [...convo.messages];
-        newConvoMessages.forEach((message) => {
-          if (!message.isRead) message.isRead = true;
-        });
-        convo.messages = [...newConvoMessages];
-        lastMessageOfActiveConvo = convo.messages[convo.messages.length-1];
-        activeConvoId = convo.id;
+        if (convo.messages.length) {
+          if (!convo.messages[convo.messages.length-1].isRead) flag = true;
+          convo.readStatus.isRead = true;
+          convo.readStatus.unreadMessagesCount = 0;
+          var newConvoMessages = [...convo.messages];
+          newConvoMessages.forEach((message) => {
+            if (!message.isRead) message.isRead = true;
+          });
+          convo.messages = [...newConvoMessages];
+          lastMessageOfActiveConvo = convo.messages[convo.messages.length-1];
+          activeConvoId = convo.id;
+        }
       }
     });
     setConversations(newConversations);

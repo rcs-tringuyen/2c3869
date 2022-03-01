@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography, Badge } from "@material-ui/core";
+import { Box, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
@@ -33,7 +33,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ChatContent = ({ conversation }) => {
-  console.log(conversation)
   const classes = useStyles();
   const { otherUser } = conversation;
   const latestMessageText = conversation.id && conversation.latestMessageText;
