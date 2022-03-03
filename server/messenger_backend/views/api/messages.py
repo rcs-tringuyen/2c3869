@@ -61,7 +61,6 @@ class Messages(APIView):
             conversation_id = body.get("conversationId")
             message_id = body.get("messageId")
             is_read = body.get("isRead")
-            print(is_read)
 
             # if we already know conversation id, we can save time and just add it to message and return
             if conversation_id:
@@ -82,5 +81,4 @@ class Messages(APIView):
                 return JsonResponse({"message": message_json})
 
         except Exception as e:
-            print(e)
             return HttpResponse(status=500)
