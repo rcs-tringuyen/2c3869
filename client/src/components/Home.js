@@ -115,7 +115,6 @@ const Home = ({ user, logout }) => {
           convo.messages = [...convo.messages, message];
           convo.latestMessageText = message.text;
           if (message.senderId !== user.id) {
-            console.log(convo);
             if (!convo.hasOwnProperty("readStatus")) {
               convo.readStatus = {};
             }
