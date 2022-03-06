@@ -25,7 +25,6 @@ const Home = ({ user, logout }) => {
   const classes = useStyles();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-
   const addSearchedUsers = (users) => {
     const currentUsers = {};
 
@@ -83,12 +82,12 @@ const Home = ({ user, logout }) => {
       let newConversations = [...conversations];
       newConversations.forEach((convo) => {
         if (convo.otherUser.id === recipientId) {
-          convo.messages = [...convo.messages, message]
+          convo.messages = [...convo.messages, message];
           convo.latestMessageText = message.text;
           convo.id = message.conversationId;
           convo.readStatus = {
-            "isRead" : true,
-            "unreadMessagesCount": 0 
+            isRead: true,
+            unreadMessagesCount: 0,
           };
         }
       });
@@ -116,18 +115,18 @@ const Home = ({ user, logout }) => {
           convo.messages = [...convo.messages, message];
           convo.latestMessageText = message.text;
           if (message.senderId !== user.id) {
-            console.log(convo)
+            console.log(convo);
             if (!convo.hasOwnProperty("readStatus")) {
-              convo.readStatus = {}
+              convo.readStatus = {};
             }
             convo.readStatus.isRead = false;
-            convo.readStatus.unreadMessagesCount 
-              ? convo.readStatus.unreadMessagesCount += 1
-              : convo.readStatus.unreadMessagesCount = 1;
+            convo.readStatus.unreadMessagesCount
+              ? (convo.readStatus.unreadMessagesCount += 1)
+              : (convo.readStatus.unreadMessagesCount = 1);
           } else {
             convo.readStatus.isRead = true;
             convo.readStatus.unreadMessagesCount = 0;
-          };
+          }
         }
       });
       setConversations(newConversations);
@@ -137,21 +136,21 @@ const Home = ({ user, logout }) => {
 
   const setActiveChat = async (username) => {
     let newConversations = [...conversations];
-    var lastMessageOfActiveConvo = null;
-    var activeConvoId = null;
-    var flag = false;
+    let lastMessageOfActiveConvo = null;
+    let activeConvoId = null;
+    let flag = false;
     newConversations.forEach((convo) => {
       if (convo.otherUser.username === username) {
         if (convo.messages.length) {
-          if (!convo.messages[convo.messages.length-1].isRead) flag = true;
+          if (!convo.messages[convo.messages.length - 1].isRead) flag = true;
           convo.readStatus.isRead = true;
           convo.readStatus.unreadMessagesCount = 0;
-          var newConvoMessages = [...convo.messages];
+          let newConvoMessages = [...convo.messages];
           newConvoMessages.forEach((message) => {
             if (!message.isRead) message.isRead = true;
           });
           convo.messages = [...newConvoMessages];
-          lastMessageOfActiveConvo = convo.messages[convo.messages.length-1];
+          lastMessageOfActiveConvo = convo.messages[convo.messages.length - 1];
           activeConvoId = convo.id;
         }
       }
@@ -160,52 +159,48 @@ const Home = ({ user, logout }) => {
     setActiveConversation(username);
     // Only PUT if the latest message is unread
     if (flag) {
-      await readMessage(
-        {
-          "conversationId": activeConvoId,
-          "messageId": lastMessageOfActiveConvo.id,
-          "isRead": true
-        }
-      )
+      await readMessage({
+        conversationId: activeConvoId,
+        messageId: lastMessageOfActiveConvo.id,
+        isRead: true,
+      });
     }
   };
 
   const readMessage = async (body) => {
     const { data } = await axios.put("/api/messages", body);
     return data;
-  }; 
+  };
 
   const seenMessage = async (conversationId) => {
     let newConversations = [...conversations];
-    var lastMessageOfActiveConvo = null;
-    var activeConvoId = null;
-    var flag = false;
+    let lastMessageOfActiveConvo = null;
+    let activeConvoId = null;
+    let flag = false;
     newConversations.forEach((convo) => {
       if (convo.id === conversationId) {
-        if (!convo.messages[convo.messages.length-1].isRead) flag = true;
+        if (!convo.messages[convo.messages.length - 1].isRead) flag = true;
         convo.readStatus.isRead = true;
         convo.readStatus.unreadMessagesCount = 0;
-        var newConvoMessages = [...convo.messages];
+        let newConvoMessages = [...convo.messages];
         newConvoMessages.forEach((message) => {
           if (!message.isRead) message.isRead = true;
         });
         convo.messages = [...newConvoMessages];
-        lastMessageOfActiveConvo = convo.messages[convo.messages.length-1];
+        lastMessageOfActiveConvo = convo.messages[convo.messages.length - 1];
         activeConvoId = convo.id;
       }
     });
     setConversations(newConversations);
     // Only PUT if the latest message is unread
     if (flag) {
-      await readMessage(
-        {
-          "conversationId": activeConvoId,
-          "messageId": lastMessageOfActiveConvo.id,
-          "isRead": true
-        }
-      )
+      await readMessage({
+        conversationId: activeConvoId,
+        messageId: lastMessageOfActiveConvo.id,
+        isRead: true,
+      });
     }
-  }
+  };
 
   const addOnlineUser = useCallback((id) => {
     setConversations((prev) =>
@@ -279,7 +274,6 @@ const Home = ({ user, logout }) => {
       fetchConversations();
     }
   }, [user]);
-
 
   const handleLogout = async () => {
     if (user && user.id) {
