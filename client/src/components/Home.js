@@ -141,7 +141,10 @@ const Home = ({ user, logout }) => {
     newConversations.forEach((convo) => {
       if (convo.otherUser.username === username) {
         if (convo.messages.length) {
-          if (!convo.messages[convo.messages.length - 1].isRead)
+          if (
+            !convo.messages[convo.messages.length - 1].isRead &&
+            convo.messages[convo.messages.length - 1].senderId !== user.id
+          )
             isLatestMessageUnread = true;
           convo.readStatus.isRead = true;
           convo.readStatus.unreadMessagesCount = 0;
@@ -159,17 +162,13 @@ const Home = ({ user, logout }) => {
     setActiveConversation(username);
     // Only PUT if the latest message is unread
     if (isLatestMessageUnread) {
-      await readMessage({
+      console.log("WHY? 1");
+      await axios.put("/api/messages", {
         conversationId: activeConvoId,
         messageId: lastMessageOfActiveConvo.id,
         isRead: true,
       });
     }
-  };
-
-  const readMessage = async (body) => {
-    const { data } = await axios.put("/api/messages", body);
-    return data;
   };
 
   const seenMessage = async (conversationId) => {
@@ -179,7 +178,10 @@ const Home = ({ user, logout }) => {
     let isLatestMessageUnread = false;
     newConversations.forEach((convo) => {
       if (convo.id === conversationId) {
-        if (!convo.messages[convo.messages.length - 1].isRead)
+        if (
+          !convo.messages[convo.messages.length - 1].isRead &&
+          convo.messages[convo.messages.length - 1].senderId !== user.id
+        )
           isLatestMessageUnread = true;
         convo.readStatus.isRead = true;
         convo.readStatus.unreadMessagesCount = 0;
@@ -195,7 +197,8 @@ const Home = ({ user, logout }) => {
     setConversations(newConversations);
     // Only PUT if the latest message is unread
     if (isLatestMessageUnread) {
-      await readMessage({
+      console.log("WHY? 2");
+      await axios.put("/api/messages", {
         conversationId: activeConvoId,
         messageId: lastMessageOfActiveConvo.id,
         isRead: true,
