@@ -30,7 +30,7 @@ const Messages = (props) => {
         return message.senderId === userId ? (
           <React.Fragment key={message.id + "-fragment"}>
             <SenderBubble key={message.id} text={message.text} time={time} />
-            {message.id === latestReadMessage.id && (
+            {latestReadMessage && message.id === latestReadMessage.id && (
               <Box
                 className={classes.root}
                 key={message.id + "-box-" + otherUser.username}
