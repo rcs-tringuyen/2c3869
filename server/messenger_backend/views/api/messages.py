@@ -72,10 +72,9 @@ class Messages(APIView):
                 last_message.save()
 
                 # All the previous message in the conversation must also have been read
-                conversation.messages.all().update(is_read=True)
+                conversation.messages.all().update(isRead=True)
 
-                message_json = last_message.to_dict()
-                return JsonResponse({"message": message_json})
+                return HttpResponse(status=204)
 
         except Exception as e:
             return HttpResponse(status=500)

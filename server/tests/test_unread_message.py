@@ -100,9 +100,19 @@ class MessageTestCase(APITransactionTestCase):
                 "HTTP_X-ACCESS-TOKEN": self.thomas_token
             }
         )
-        self.assertEqual(message_response.status_code, status.HTTP_200_OK)
-        data = message_response.json().get("message")
-        self.assertTrue(data.get("isRead"))
+        self.assertEqual(message_response.status_code, status.HTTP_204_NO_CONTENT)
+        
+        conversation_response = self.client.get(
+            "/api/conversations",
+            format="json",
+            **{
+                "HTTP_X-ACCESS-TOKEN": self.thomas_token
+            }
+        )
+
+        conversation_data = conversation_response.json()[0]
+        self.assertTrue(conversation_data['readStatus']['isRead'])
+        
 
     def test_new_message_unread(self):
         # Thomas reply to Santiago
