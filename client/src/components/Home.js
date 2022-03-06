@@ -138,11 +138,12 @@ const Home = ({ user, logout }) => {
     let newConversations = [...conversations];
     let lastMessageOfActiveConvo = null;
     let activeConvoId = null;
-    let flag = false;
+    let isLatestMessageUnread = false;
     newConversations.forEach((convo) => {
       if (convo.otherUser.username === username) {
         if (convo.messages.length) {
-          if (!convo.messages[convo.messages.length - 1].isRead) flag = true;
+          if (!convo.messages[convo.messages.length - 1].isRead)
+            isLatestMessageUnread = true;
           convo.readStatus.isRead = true;
           convo.readStatus.unreadMessagesCount = 0;
           let newConvoMessages = [...convo.messages];
@@ -158,7 +159,7 @@ const Home = ({ user, logout }) => {
     setConversations(newConversations);
     setActiveConversation(username);
     // Only PUT if the latest message is unread
-    if (flag) {
+    if (isLatestMessageUnread) {
       await readMessage({
         conversationId: activeConvoId,
         messageId: lastMessageOfActiveConvo.id,
@@ -176,10 +177,11 @@ const Home = ({ user, logout }) => {
     let newConversations = [...conversations];
     let lastMessageOfActiveConvo = null;
     let activeConvoId = null;
-    let flag = false;
+    let isLatestMessageUnread = false;
     newConversations.forEach((convo) => {
       if (convo.id === conversationId) {
-        if (!convo.messages[convo.messages.length - 1].isRead) flag = true;
+        if (!convo.messages[convo.messages.length - 1].isRead)
+          isLatestMessageUnread = true;
         convo.readStatus.isRead = true;
         convo.readStatus.unreadMessagesCount = 0;
         let newConvoMessages = [...convo.messages];
@@ -193,7 +195,7 @@ const Home = ({ user, logout }) => {
     });
     setConversations(newConversations);
     // Only PUT if the latest message is unread
-    if (flag) {
+    if (isLatestMessageUnread) {
       await readMessage({
         conversationId: activeConvoId,
         messageId: lastMessageOfActiveConvo.id,
