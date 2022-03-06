@@ -65,6 +65,11 @@ class Messages(APIView):
             # if we already know conversation id, we can save time and just add it to message and return
             if conversation_id:
                 conversation = Conversation.objects.filter(id=conversation_id).first()
+                
+                # Unauthorized user tampering the conversation
+                if (user.id != conversation.user1.id and user.id != conversation.user2.id):
+                    return HttpResponse(status=403)
+
                 last_message = Message.objects.get(
                     conversation=conversation, id=message_id
                 )
