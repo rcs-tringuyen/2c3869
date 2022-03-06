@@ -51,9 +51,9 @@ class Conversations(APIView):
                 if convo_dict["messages"][-1]["senderId"] == user_id:
                     read_status["isRead"] = True
                 if not read_status["isRead"]:
-                    for i in range(len(convo_dict["messages"])):
-                        if not convo_dict["messages"][i]["isRead"]:
-                            read_status["unreadMessagesCount"] = len(convo_dict["messages"]) - i
+                    for message in convo_dict["messages"]:
+                        if not message["isRead"]:
+                            read_status["unreadMessagesCount"] = len(convo_dict["messages"]) - convo_dict["messages"].index(message)
                             break
 
                 convo_dict["readStatus"] = read_status
