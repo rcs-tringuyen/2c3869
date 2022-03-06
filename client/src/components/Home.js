@@ -148,11 +148,6 @@ const Home = ({ user, logout }) => {
             isLatestMessageUnread = true;
           convo.readStatus.isRead = true;
           convo.readStatus.unreadMessagesCount = 0;
-          let newConvoMessages = [...convo.messages];
-          newConvoMessages.forEach((message) => {
-            if (!message.isRead) message.isRead = true;
-          });
-          convo.messages = [...newConvoMessages];
           lastMessageOfActiveConvo = convo.messages[convo.messages.length - 1];
           activeConvoId = convo.id;
         }
@@ -162,7 +157,6 @@ const Home = ({ user, logout }) => {
     setActiveConversation(username);
     // Only PUT if the latest message is unread
     if (isLatestMessageUnread) {
-      console.log("WHY? 1");
       await axios.put("/api/messages", {
         conversationId: activeConvoId,
         messageId: lastMessageOfActiveConvo.id,
@@ -185,11 +179,6 @@ const Home = ({ user, logout }) => {
           isLatestMessageUnread = true;
         convo.readStatus.isRead = true;
         convo.readStatus.unreadMessagesCount = 0;
-        let newConvoMessages = [...convo.messages];
-        newConvoMessages.forEach((message) => {
-          if (!message.isRead) message.isRead = true;
-        });
-        convo.messages = [...newConvoMessages];
         lastMessageOfActiveConvo = convo.messages[convo.messages.length - 1];
         activeConvoId = convo.id;
       }
@@ -197,7 +186,6 @@ const Home = ({ user, logout }) => {
     setConversations(newConversations);
     // Only PUT if the latest message is unread
     if (isLatestMessageUnread) {
-      console.log("WHY? 2");
       await axios.put("/api/messages", {
         conversationId: activeConvoId,
         messageId: lastMessageOfActiveConvo.id,
