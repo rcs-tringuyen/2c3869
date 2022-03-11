@@ -24,7 +24,6 @@ const ActiveChat = ({
   conversations,
   activeConversation,
   postMessage,
-  seenMessage,
 }) => {
   const classes = useStyles();
 
@@ -39,6 +38,7 @@ const ActiveChat = ({
   };
 
   let latestReadMessage = null;
+
   if (conversation) {
     const messages = conversation.messages;
     const lastestReadMessageId = messages
@@ -69,7 +69,6 @@ const ActiveChat = ({
                   conversationId={conversation.id || null}
                   user={user}
                   postMessage={postMessage}
-                  seenMessage={seenMessage}
                 />
               </>
             )}

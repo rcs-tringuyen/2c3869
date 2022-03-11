@@ -25,32 +25,30 @@ const useStyles = makeStyles((theme) => ({
   },
   notification: {
     display: "flex",
-    justifyContent: 'space-between'
+    justifyContent: "space-between",
   },
   end: {
-    marginLeft: "auto"
-  }
+    marginLeft: "auto",
+  },
 }));
 
 const ChatContent = ({ conversation }) => {
   const classes = useStyles();
   const { otherUser } = conversation;
   const latestMessageText = conversation.id && conversation.latestMessageText;
-  const isRead = (conversation.id && conversation.readStatus.isRead);
+  const isRead = conversation.id && conversation.readStatus.isRead;
 
   return (
-
     <Box className={classes.root}>
       <Box>
         <Typography className={classes.username}>
           {otherUser.username}
         </Typography>
-        {isRead
-          ? <Typography className={classes.previewText}>{latestMessageText}</Typography>
-          : <Typography className={classes.previewTextUnread}>
-                  {latestMessageText}
-            </Typography>
-        }
+        <Typography
+          className={isRead ? classes.previewText : classes.previewTextUnread}
+        >
+          {latestMessageText}
+        </Typography>
       </Box>
     </Box>
   );
