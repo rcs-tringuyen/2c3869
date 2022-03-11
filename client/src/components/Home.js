@@ -99,16 +99,23 @@ const Home = ({ user, logout }) => {
   const addMessageToConversation = useCallback(
     (data) => {
       // if sender isn't null, that means the message needs to be put in a brand new convo
-      const { message, sender = null } = data;
+      const { message, sender = null, recipientId } = data;
       let newConversations = [...conversations];
       if (sender !== null) {
         const newConvo = {
           id: message.conversationId,
           otherUser: sender,
           messages: [message],
+          readStatus: {
+            isRead: false,
+            unreadMessagesCount: 1,
+          },
         };
         newConvo.latestMessageText = message.text;
-        newConversations = [newConvo, ...newConversations];
+        console.log(recipientId);
+        if (recipientId === user.id || message.senderId === user.id) {
+          newConversations = [newConvo, ...newConversations];
+        }
       }
       newConversations.forEach((convo) => {
         if (convo.id === message.conversationId) {
@@ -120,7 +127,7 @@ const Home = ({ user, logout }) => {
             convo.readStatus.unreadMessagesCount = 0;
           } else if (
             // The otherUser's conversation, and not being activeConversation
-            message.senderId !== user.id &&
+            recipientId === user.id &&
             activeConversation !== convo.otherUser.username
           ) {
             console.log("b");
@@ -132,7 +139,7 @@ const Home = ({ user, logout }) => {
               ? (convo.readStatus.unreadMessagesCount += 1)
               : (convo.readStatus.unreadMessagesCount = 1);
           } else if (
-            message.senderId !== user.id &&
+            recipientId === user.id &&
             activeConversation === convo.otherUser.username
           ) {
             console.log("c");
@@ -153,12 +160,13 @@ const Home = ({ user, logout }) => {
               console.error(error);
             }
           }
+          console.log(convo);
           convo.messages = [...convo.messages, message];
         }
       });
       setConversations(newConversations);
     },
-    [setConversations, conversations, user]
+    [setConversations, conversations, activeConversation, socket, user]
   );
 
   const setActiveChat = async (username) => {
@@ -210,7 +218,7 @@ const Home = ({ user, logout }) => {
       });
       setConversations(newConversations);
     },
-    [setConversations, conversations, user]
+    [setConversations, conversations]
   );
 
   const addOnlineUser = useCallback((id) => {
@@ -317,7 +325,6 @@ const Home = ({ user, logout }) => {
           conversations={conversations}
           user={user}
           postMessage={postMessage}
-          seenMessage={seenMessage}
         />
       </Grid>
     </>
