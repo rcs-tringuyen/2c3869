@@ -112,7 +112,6 @@ const Home = ({ user, logout }) => {
           },
         };
         newConvo.latestMessageText = message.text;
-        console.log(recipientId);
         if (recipientId === user.id || message.senderId === user.id) {
           newConversations = [newConvo, ...newConversations];
         }
@@ -122,7 +121,6 @@ const Home = ({ user, logout }) => {
           convo.latestMessageText = message.text;
           // This is the sender's conversation
           if (message.senderId === user.id) {
-            console.log("a");
             convo.readStatus.isRead = true;
             convo.readStatus.unreadMessagesCount = 0;
           } else if (
@@ -130,7 +128,6 @@ const Home = ({ user, logout }) => {
             recipientId === user.id &&
             activeConversation !== convo.otherUser.username
           ) {
-            console.log("b");
             if (!convo.hasOwnProperty("readStatus")) {
               convo.readStatus = {};
             }
@@ -142,7 +139,6 @@ const Home = ({ user, logout }) => {
             recipientId === user.id &&
             activeConversation === convo.otherUser.username
           ) {
-            console.log("c");
             convo.readStatus.isRead = true;
             convo.readStatus.unreadMessagesCount = 0;
             message.isRead = true;
@@ -160,7 +156,6 @@ const Home = ({ user, logout }) => {
               console.error(error);
             }
           }
-          console.log(convo);
           convo.messages = [...convo.messages, message];
         }
       });
