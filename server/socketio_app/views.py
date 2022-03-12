@@ -26,10 +26,17 @@ def go_online(sid, user_id):
 def new_message(sid, message):
     sio.emit(
         "new-message",
-        {"message": message["message"], "sender": message["sender"]},
+        {"message": message["message"], "sender": message["sender"], "recipientId": message["recipientId"]},
         skip_sid=sid,
     )
 
+@sio.on("seen-message")
+def seen_message(sid, conversationId):
+    sio.emit(
+        "seen-message",
+        conversationId,
+        skip_sid=sid,
+    )
 
 @sio.on("logout")
 def logout(sid, user_id):

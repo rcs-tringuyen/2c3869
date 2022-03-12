@@ -1,25 +1,30 @@
-import React from 'react';
-import { Box } from '@material-ui/core';
-import { BadgeAvatar, ChatContent } from '../Sidebar';
-import { makeStyles } from '@material-ui/core/styles';
+import React from "react";
+import { Box, Badge } from "@material-ui/core";
+import { BadgeAvatar, ChatContent } from "../Sidebar";
+import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     borderRadius: 8,
     height: 80,
-    boxShadow: '0 2px 10px 0 rgba(88,133,196,0.05)',
+    boxShadow: "0 2px 10px 0 rgba(88,133,196,0.05)",
     marginBottom: 10,
-    display: 'flex',
-    alignItems: 'center',
-    '&:hover': {
-      cursor: 'grab',
+    display: "flex",
+    alignItems: "center",
+    "&:hover": {
+      cursor: "grab",
     },
+  },
+  badge: {
+    marginRight: "25px",
   },
 }));
 
 const Chat = ({ conversation, setActiveChat }) => {
   const classes = useStyles();
   const { otherUser } = conversation;
+  const unreadMessagesCount =
+    conversation.id && conversation.readStatus.unreadMessagesCount;
 
   const handleClick = async (conversation) => {
     await setActiveChat(conversation.otherUser.username);
@@ -34,6 +39,13 @@ const Chat = ({ conversation, setActiveChat }) => {
         sidebar={true}
       />
       <ChatContent conversation={conversation} />
+      {unreadMessagesCount > 0 && (
+        <Badge
+          badgeContent={unreadMessagesCount}
+          color="primary"
+          className={classes.badge}
+        />
+      )}
     </Box>
   );
 };

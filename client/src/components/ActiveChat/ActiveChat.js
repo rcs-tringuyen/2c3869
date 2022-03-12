@@ -1,21 +1,21 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import { Box } from '@material-ui/core';
-import { Input, Header, Messages } from './index';
+import React from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import { Box } from "@material-ui/core";
+import { Input, Header, Messages } from "./index";
 
 const useStyles = makeStyles(() => ({
   root: {
-    display: 'flex',
+    display: "flex",
     flexGrow: 8,
-    flexDirection: 'column',
+    flexDirection: "column",
   },
   chatContainer: {
     marginLeft: 41,
     marginRight: 41,
-    display: 'flex',
-    flexDirection: 'column',
+    display: "flex",
+    flexDirection: "column",
     flexGrow: 1,
-    justifyContent: 'space-between',
+    justifyContent: "space-between",
   },
 }));
 
@@ -37,6 +37,16 @@ const ActiveChat = ({
     return obj !== {} && obj !== undefined;
   };
 
+  let latestReadMessage = null;
+
+  if (conversation) {
+    const messages = conversation.messages;
+    const lastestReadMessageId = messages
+      .map((message) => message.isRead === true && message.senderId === user.id)
+      .lastIndexOf(true);
+    latestReadMessage = messages[lastestReadMessageId];
+  }
+
   return (
     <Box className={classes.root}>
       {isConversation(conversation) && conversation.otherUser && (
@@ -52,6 +62,7 @@ const ActiveChat = ({
                   messages={conversation.messages}
                   otherUser={conversation.otherUser}
                   userId={user.id}
+                  latestReadMessage={latestReadMessage}
                 />
                 <Input
                   otherUser={conversation.otherUser}

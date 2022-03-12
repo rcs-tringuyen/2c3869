@@ -26,7 +26,7 @@ class Messages(APIView):
             if conversation_id:
                 conversation = Conversation.objects.filter(id=conversation_id).first()
                 message = Message(
-                    senderId=sender_id, text=text, conversation=conversation
+                    senderId=sender_id, text=text, conversation=conversation, isRead=False
                 )
                 message.save()
                 message_json = message.to_dict()
@@ -42,9 +42,44 @@ class Messages(APIView):
                 if sender and sender["id"] in online_users:
                     sender["online"] = True
 
-            message = Message(senderId=sender_id, text=text, conversation=conversation)
+            message = Message(senderId=sender_id, text=text, conversation=conversation, isRead=False)
             message.save()
             message_json = message.to_dict()
             return JsonResponse({"message": message_json, "sender": sender})
+        except Exception as e:
+            return HttpResponse(status=500)
+
+    def put(self, request):
+        # Update the read status
+        try:
+            user = get_user(request)
+
+            if user.is_anonymous:
+                return HttpResponse(status=401)
+
+            body = request.data
+            conversation_id = body.get("conversationId")
+            message_id = body.get("messageId")
+            is_read = body.get("isRead")
+
+            # if we already know conversation id, we can save time and just add it to message and return
+            if conversation_id:
+                conversation = Conversation.objects.filter(id=conversation_id).first()
+                
+                # Unauthorized user tampering the conversation
+                if (user.id != conversation.user1.id and user.id != conversation.user2.id):
+                    return HttpResponse(status=403)
+
+                last_message = Message.objects.get(
+                    conversation=conversation, id=message_id
+                )
+                last_message.isRead = is_read # is_read will be True
+                last_message.save()
+
+                # All the previous message in the conversation must also have been read
+                conversation.messages.all().update(isRead=True)
+
+                return HttpResponse(status=204)
+
         except Exception as e:
             return HttpResponse(status=500)
