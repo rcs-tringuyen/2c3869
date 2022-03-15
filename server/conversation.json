@@ -1,0 +1,32 @@
+[
+{
+  "model": "messenger_backend.conversation",
+  "pk": 21,
+  "fields": {
+    "user1": 43,
+    "user2": 44,
+    "createdAt": "2022-03-15T02:04:46.349Z",
+    "updatedAt": "2022-03-15T02:04:46.349Z"
+  }
+},
+{
+  "model": "messenger_backend.conversation",
+  "pk": 22,
+  "fields": {
+    "user1": 45,
+    "user2": 43,
+    "createdAt": "2022-03-15T02:04:46.350Z",
+    "updatedAt": "2022-03-15T02:04:46.350Z"
+  }
+},
+{
+  "model": "messenger_backend.conversation",
+  "pk": 23,
+  "fields": {
+    "user1": 46,
+    "user2": 43,
+    "createdAt": "2022-03-15T02:04:46.351Z",
+    "updatedAt": "2022-03-15T02:04:46.351Z"
+  }
+}
+]
